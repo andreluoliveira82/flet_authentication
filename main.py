@@ -17,6 +17,8 @@ def main(page: ft.Page):
                     controls=[ft.Text("Page not found", color="red")],
                 )
             )
+        page.fonts = {"abeezee": "fonts/ABeeZee-Regular.ttf"}
+        # page.window.maximized=True
         page.update()
 
     page.on_route_change = route_change

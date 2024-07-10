@@ -1,0 +1,11 @@
+
+#configs controls
+
+# DEFAULT size buttons
+BTN_WIDTH = 200
+BTN_HEIGHT = 40
+
+# DEFAULT SIZE TEXTFIELDS
+TXT_WIDTH = 132
+TXT_HEIGHT = 32
+
