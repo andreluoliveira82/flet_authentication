@@ -159,6 +159,23 @@ class SignUp(ft.Container):
             ]
         )
 
+    def show_splash_and_redirect(self, page, error_field):
+        page.splash = ft.ProgressBar()
+        error_field.value = "Seus dados foram cadastrado com sucesso!"
+        error_field.color = CUSTOM_SUCCESS_TEXT_COLOR
+        error_field.size = 14
+        page.update()
+
+        # Função que será chamada após o atraso
+        def remove_splash_and_redirect():
+            page.splash = None
+            page.update()
+            page.go("/login")
+
+        # Atraso de 2 segundos
+        time.sleep(2)
+        remove_splash_and_redirect()
+
     def signup(self, e):
         # getting the values ​​filled in the fields
         first_name_value = self.first_name.content.value
@@ -220,8 +237,8 @@ class SignUp(ft.Container):
                 # self.page.update()
                 # self.page.go("/login")
 
-                self.show_splash_and_redirect(self.page,error_field=self.error_field)
-                
+                self.show_splash_and_redirect(self.page, error_field=self.error_field)
+
             else:
                 # In this case the email is valid, but is already being used
                 msg = "Este email já está em uso."
@@ -246,20 +263,3 @@ class SignUp(ft.Container):
             time.sleep(2)
             self.error_field.size = 0
             self.error_field.update()
-
-    def show_splash_and_redirect(self, page, error_field):
-        page.splash = ft.ProgressBar()
-        error_field.value = "Seus dados foram cadastrado com sucesso!"
-        error_field.color = CUSTOM_SUCCESS_TEXT_COLOR
-        error_field.size = 14
-        page.update()
-
-        # Função que será chamada após o atraso
-        def remove_splash_and_redirect():
-            page.splash = None
-            page.update()
-            page.go("/login")
-            
-        # Atraso de 2 segundos
-        time.sleep(2)
-        remove_splash_and_redirect()

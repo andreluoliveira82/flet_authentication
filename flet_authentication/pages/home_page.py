@@ -5,7 +5,7 @@ from flet_authentication.utils.controls import *
 from flet_authentication.components.fields import CustomTextField
 
 
-class Dashboard(ft.Container):
+class HomePage(ft.Container):
     def __init__(self, page: ft.Page):
         super().__init__()
 
@@ -21,9 +21,9 @@ class Dashboard(ft.Container):
                         alignment=ft.MainAxisAlignment.CENTER,
                         controls=[
                             ft.Text(
-                                "Dashboard",
+                                "Home Page",
                                 font_family="abeezee",
-                                color=CUSTOM_TEXT_COLOR,
+                                color=CUSTOM_PRIMARY_COLOR,
                                 size=50,
                                 weight=ft.FontWeight.BOLD,
                                 expand=True,
@@ -34,12 +34,12 @@ class Dashboard(ft.Container):
                                 height=BTN_HEIGHT,
                                 bgcolor=CUSTOM_BGCOLOR,
                                 content=ft.Text(
-                                    "home page",
+                                    "Dashboard",
                                     size=12,
                                     color=CUSTOM_TEXT_COLOR,
                                     style=ft.TextStyle.baseline,
                                 ),
-                                on_click=lambda e: page.go("/"),
+                                on_click=lambda e: page.go("/dashboard"),
                             ),
                         ],
                     ),
@@ -47,7 +47,7 @@ class Dashboard(ft.Container):
                 # container da direita
                 ft.Container(
                     expand=3,
-                    image_src="images/white-black-background-textures-1024.jpg",
+                    image_src="images/dark-blur-blurred-gradient.webp",
                     image_opacity=0.3,
                     image_fit=ft.ImageFit.COVER,
                     content=ft.Column(
@@ -55,15 +55,17 @@ class Dashboard(ft.Container):
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                         controls=[
                             ft.Text(
-                                "Dashboard Seccion",
+                                "Home Page Seccion",
                                 font_family="abeezee",
                                 color=ft.colors.PURPLE,
                                 size=50,
                                 weight=ft.FontWeight.BOLD,
                             ),
-                            ft.Divider(color=ft.colors.PURPLE, height=0.5, thickness=0.2),
+                            ft.Divider(
+                                color=ft.colors.PURPLE, height=0.5, thickness=0.2
+                            ),
                             ft.Icon(
-                                name=ft.icons.DASHBOARD_CUSTOMIZE,
+                                name=ft.icons.HOME,
                                 size=100,
                                 color=CUSTOM_TEXT_HEADER_COLOR,
                             ),

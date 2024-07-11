@@ -18,15 +18,6 @@ def get_data(conn, table_name, conditions=None) -> dict:
     Returns:
         dict: A list of dictionaries, where each dictionary represents a row in the table.
 
-    Example:
-        >>> conn = create_connection("mydatabase.db")  # Replace with your connection creation code
-        >>> data = get_data(conn, "mytable", "age > 18")
-        >>> print(data)
-        [
-            {'id': 1, 'name': 'John', 'age': 25},
-            {'id': 2, 'name': 'Jane', 'age': 22},
-            {'id': 3, 'name': 'Bob', 'age': 30}
-        ]
     """
     cursor = conn.cursor()
     if conditions:
@@ -37,7 +28,7 @@ def get_data(conn, table_name, conditions=None) -> dict:
     cursor.execute(sql_command)
     rows = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
-    result = [{columns[i]:row[i]} for i in range(len(columns)) for row in rows]
+    result = [{columns[i]:row[i] for i in range(len(columns))} for row in rows]
     return result
 
 
