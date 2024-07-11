@@ -6,6 +6,7 @@ from flet_authentication.utils.controls import *
 from flet_authentication.utils.validation import Validation
 from flet_authentication.components.fields import CustomTextField
 from flet_authentication.db import db_path
+from flet_authentication.db.hash_passord import hash_password
 
 from flet_authentication.db.crud import (
     connect_to_database,
@@ -205,7 +206,7 @@ class SignUp(ft.Container):
                         "first_name": first_name_value,
                         "last_name": last_name_value,
                         "email": email_value,
-                        "password": password_value,
+                        "password": hash_password(password_value),
                     },
                 )
                 # # exibe um splash e uma mensagem de sucesso

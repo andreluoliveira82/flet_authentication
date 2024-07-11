@@ -17,7 +17,7 @@ class Validation():
             return False
         else:
             # regular expression to valid email
-            pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
             return re.match(pattern, email) is not None
 
 
@@ -34,6 +34,6 @@ class Validation():
             return False
         elif not any(c.isdigit() for c in password):
             return False
-        elif not re.search("[@_!#$%^&*()<>?/\|}{~:}]", password):
+        elif not re.search("[@_!#$%^&*()<>?/\\|}{~:}]", password):
             return False
         return True

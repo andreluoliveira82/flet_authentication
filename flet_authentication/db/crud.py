@@ -70,6 +70,6 @@ def insert_data(conn, table_name, values) -> None:
     sql_command = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
     cursor.execute(sql_command, list(values.values()))
     conn.commit()
-    print(f"{len(values)} row(s) inserted into {table_name} table.")
+    conn.close()
     
     
