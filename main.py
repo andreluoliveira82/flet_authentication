@@ -9,7 +9,9 @@ def main(page: ft.Page):
     def route_change(event):
         route = event.route
         page.views.clear()
+
         views = views_handler(page)
+
         if route in views:
             page.views.append(views[route])
         else:
