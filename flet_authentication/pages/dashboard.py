@@ -2,7 +2,12 @@ import flet as ft
 
 from flet_authentication.utils.colors import *
 from flet_authentication.utils.controls import *
-from flet_authentication.components.fields import CustomTextField
+
+# from flet_authentication.components.custom_fields import CustomTextField
+from flet_authentication.components.custom_buttons import (
+    CustomTextButton,
+    CustomElevatedButton,
+)
 
 
 class Dashboard(ft.Container):
@@ -28,17 +33,12 @@ class Dashboard(ft.Container):
                                 weight=ft.FontWeight.BOLD,
                                 expand=True,
                             ),
-                            # button home page
+                            # button go to home_page
                             ft.Container(
-                                alignment=ft.alignment.center,
-                                height=BTN_HEIGHT,
-                                bgcolor=CUSTOM_BGCOLOR,
-                                content=ft.Text(
-                                    "home page",
-                                    size=12,
-                                    color=CUSTOM_TEXT_COLOR,
-                                    style=ft.TextStyle.baseline,
-                                ),
+                                # alignment=ft.alignment.center,
+                                # height=BTN_HEIGHT,
+                                # bgcolor=CUSTOM_BGCOLOR,
+                                content=CustomTextButton("home page"),
                                 on_click=lambda e: page.go("/"),
                             ),
                         ],
@@ -61,11 +61,23 @@ class Dashboard(ft.Container):
                                 size=50,
                                 weight=ft.FontWeight.BOLD,
                             ),
-                            ft.Divider(color=ft.colors.PURPLE, height=0.5, thickness=0.2),
+                            ft.Divider(
+                                color=ft.colors.PURPLE, height=0.5, thickness=0.2
+                            ),
                             ft.Icon(
                                 name=ft.icons.DASHBOARD_CUSTOMIZE,
                                 size=100,
                                 color=CUSTOM_TEXT_HEADER_COLOR,
+                            ),
+                            ft.Divider(
+                                color=ft.colors.PURPLE, height=0.5, thickness=0.2
+                            ),
+                            ft.Container(
+                                content=CustomElevatedButton(
+                                    text="Home Page",
+                                    bgcolor = 'green',
+                                    on_click=lambda e: page.go("/"),
+                                )
                             ),
                         ],
                     ),

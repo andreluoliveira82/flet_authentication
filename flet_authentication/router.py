@@ -1,7 +1,7 @@
 import flet as ft
 
 from .pages.authentication.login import Login
-from .pages.authentication.signup import SignUp
+from .pages.authentication.register import RegisterUser
 from .pages.dashboard import Dashboard
 from .pages.home_page import HomePage
 
@@ -24,11 +24,11 @@ def views_handler(page):
             padding=ft.padding.all(0),
             controls=[Login(page)],
         ),
-        "/signup": ft.View(
-            "/signup",
+        "/register_user": ft.View(
+            "/register_user",
             bgcolor=CUSTOM_BGCOLOR,
             padding=ft.padding.all(0),
-            controls=[SignUp(page)],
+            controls=[RegisterUser(page)],
         ),
         "/dashboard": ft.View(
             "/dashboard",

@@ -4,7 +4,8 @@ import time
 from flet_authentication.utils.colors import *
 from flet_authentication.utils.controls import *
 from flet_authentication.utils.validation import Validation
-from flet_authentication.components.fields import CustomTextField
+from flet_authentication.components.custom_fields import CustomTextField
+from flet_authentication.components.custom_buttons import CustomTextButton
 from flet_authentication.db import db_path
 from flet_authentication.db.hash_passord import hash_password
 
@@ -15,7 +16,7 @@ from flet_authentication.db.crud import (
 )
 
 
-class SignUp(ft.Container):
+class RegisterUser(ft.Container):
     def __init__(self, page: ft.Page):
         super().__init__()
 
@@ -36,6 +37,7 @@ class SignUp(ft.Container):
                 autofocus=True,
             )
         )
+
         self.last_name = ft.Container(
             content=CustomTextField(
                 label="Sobrenome",
@@ -80,6 +82,7 @@ class SignUp(ft.Container):
             )
         )
 
+        # master container
         self.content = ft.Row(
             controls=[
                 # container da esquerda
@@ -95,7 +98,6 @@ class SignUp(ft.Container):
                                 font_family="abeezee",
                                 size=20,
                                 weight=ft.FontWeight.NORMAL,
-                                # expand=True,
                             ),
                             ft.Divider(
                                 color=CUSTOM_BORDER_COLOR, height=0.8, thickness=1
@@ -107,7 +109,8 @@ class SignUp(ft.Container):
                             self.email,
                             self.password,
                             self.confirm_password,
-                            # button Login
+                            
+                            # btn register
                             ft.Container(
                                 alignment=ft.alignment.center,
                                 height=BTN_HEIGHT,
@@ -115,24 +118,33 @@ class SignUp(ft.Container):
                                 content=ft.Text(
                                     "Registrar-me", size=16, color=CUSTOM_TEXT_COLOR
                                 ),
-                                on_click=self.signup,
+                                on_click=self.register_user,
                             ),
-                            # button create account
+                            # btns links
                             ft.Container(
                                 alignment=ft.alignment.center,
-                                height=BTN_HEIGHT,
-                                bgcolor=CUSTOM_BGCOLOR,
-                                content=ft.Text(
-                                    "Login",
-                                    size=12,
-                                    color=ft.colors.BLUE,
-                                    style=ft.TextStyle.baseline,
+                                content=ft.Column(
+                                    controls=[
+                                        # button create account
+                                        ft.Container(
+                                            content=CustomTextButton(
+                                                text="Já tem conta? Fazer Login"
+                                            ),
+                                            on_click=lambda e: page.go("/login"),
+                                        ),
+                                        # btn to go home_page
+                                        ft.Container(
+                                            content=CustomTextButton(text="Home Page"),
+                                            on_click=lambda e: self.page.go("/"),
+                                            visible=False
+                                        ),
+                                    ]
                                 ),
-                                on_click=lambda e: page.go("/login"),
                             ),
                         ],
                     ),
                 ),
+                
                 # container da direita
                 ft.Container(
                     expand=3,
@@ -159,32 +171,19 @@ class SignUp(ft.Container):
             ]
         )
 
-    def show_splash_and_redirect(self, page, error_field):
-        page.splash = ft.ProgressBar()
-        error_field.value = "Seus dados foram cadastrado com sucesso!"
-        error_field.color = CUSTOM_SUCCESS_TEXT_COLOR
-        error_field.size = 14
-        page.update()
+    def register_user(self, e):
+        """
+        Registra um novo usuário no sistema.
 
-        # Função que será chamada após o atraso
-        def remove_splash_and_redirect():
-            page.splash = None
-            page.update()
-            page.go("/login")
-
-        # Atraso de 2 segundos
-        time.sleep(2)
-        remove_splash_and_redirect()
-
-    def signup(self, e):
-        # getting the values ​​filled in the fields
+        Args:
+            e (_type_): Evento de trigger do register_user.
+        """
         first_name_value = self.first_name.content.value
         last_name_value = self.last_name.content.value
         email_value = self.email.content.value
         password_value = self.password.content.value
         confirm_password_value = self.confirm_password.content.value
 
-        # check that no fields is empty
         if (
             first_name_value
             and last_name_value
@@ -192,74 +191,88 @@ class SignUp(ft.Container):
             and password_value
             and confirm_password_value
         ):
-            # self.page.go("/dashboard")
+            if confirm_password_value != password_value:
+                self.display_error("As senhas digitadas não correspondem.")
+                return False
+            try:
+                conn = connect_to_database(db_path=db_path)
 
-            # establishes an connection to the database
-            conn = connect_to_database(db_path=db_path)
+                if not self.validation.is_valid_email(email=email_value):
+                    self.display_error("Insira um email válido.", self.email)
 
-            # chech is valid email
-            if not self.validation.is_valid_email(email=email_value):
-                # in this case, the email is'nt valid
-                msg = "Insira um email válido."
-                self.email.border = self.error_border
-                self.error_field.value = msg
-                self.error_field.size = 14
-                self.error_field.update()
-                self.email.update()
-                time.sleep(2)  # Espera de forma não bloqueante
-                self.email.border = self.default_border
-                self.error_field.size = 0
-                self.error_field.update()
-                self.email.update()
-
-            # check if email already exists in database. If it doesn't exist, we will create the account
-            elif not check_data_exists(conn, "users", f"email='{email_value}'"):
-                print("This is our signup")
-                # insert data into table in database
-                insert_data(
-                    conn=conn,
-                    table_name="users",
-                    values={
-                        "first_name": first_name_value,
-                        "last_name": last_name_value,
-                        "email": email_value,
-                        "password": hash_password(password_value),
-                    },
+                elif not check_data_exists(conn, "users", f"email='{email_value}'"):
+                    insert_data(
+                        conn=conn,
+                        table_name="users",
+                        values={
+                            "first_name": first_name_value,
+                            "last_name": last_name_value,
+                            "email": email_value,
+                            "password": hash_password(password_value),
+                        },
+                    )
+                    self.show_splash_and_redirect(
+                        self.page, error_field=self.error_field
+                    )
+                    return True
+                else:
+                    self.display_error("Este email já está em uso.", self.email)
+                    return False
+            except Exception as ex:
+                self.display_error(
+                    f"Ocorreu um erro ao conectar ao banco de dados: {ex}",
+                    self.error_field,
                 )
-                # # exibe um splash e uma mensagem de sucesso
-                # self.page.splash = ft.ProgressBar()
-                # self.error_field.value = "Seus dados foram cadastrado com sucesso!"
-                # self.error_field.color = CUSTOM_SUCCESS_TEXT_COLOR
-                # self.error_field.size = 14
-                # self.page.update()
-                # time.sleep(2)  # Espera de forma não bloqueante
-                # self.page.splash = None
-                # self.page.update()
-                # self.page.go("/login")
-
-                self.show_splash_and_redirect(self.page, error_field=self.error_field)
-
-            else:
-                # In this case the email is valid, but is already being used
-                msg = "Este email já está em uso."
-                self.email.border = self.error_border
-                self.error_field.value = msg
-                self.error_field.size = 14
-                self.error_field.update()
-                self.email.update()
-                time.sleep(2)
-                self.email.border = self.default_border
-                self.error_field.size = 0
-                self.error_field.update()
-                self.email.update()
-
+                return False
+            finally:
+                conn.close()
         else:
-            # in case any mandatory field is empty
-            # display an error message in the error_field field
-            msg = "Todos os campos precisam ser preenchidos corretamente."
-            self.error_field.value = msg
-            self.error_field.size = 14
-            self.error_field.update()
-            time.sleep(2)
-            self.error_field.size = 0
-            self.error_field.update()
+            self.display_error(
+                "Todos os campos precisam ser preenchidos corretamente.",
+                self.error_field,
+            )
+            return False
+
+    def display_error(self, msg, field):
+        """
+        Exibe uma mensagem de erro no campo especificado.
+
+        Args:
+            msg (str): Mensagem de erro a ser exibida.
+            field (ft.TextField): Campo onde a mensagem de erro será exibida.
+        """
+        field.border = self.error_border
+        self.error_field.value = msg
+        self.error_field.size = 14
+        self.error_field.update()
+        field.update()
+        time.sleep(2)
+        field.border = self.default_border
+        self.error_field.size = 0
+        self.error_field.update()
+        field.update()
+
+    def show_splash_and_redirect(self, page, error_field):
+        """
+        Exibe um splash de carregamento, mostra uma mensagem de sucesso e redireciona para a página de login.
+
+        Args:
+            page (ft.Page): A página atual.
+            error_field (ft.TextField): Campo para exibir mensagens de erro.
+        """
+        splash = ft.ProgressBar()
+        page.overlay.append(splash)
+        error_field.value = "Seus dados foram cadastrados com sucesso!"
+        error_field.color = CUSTOM_SUCCESS_TEXT_COLOR
+        error_field.size = 14
+        page.update()
+
+        # Função que será chamada após o atraso
+        def remove_splash_and_redirect():
+            page.overlay.remove(splash)
+            page.update()
+            page.go("/login")
+
+        # Atraso de 2 segundos
+        time.sleep(2)
+        remove_splash_and_redirect()

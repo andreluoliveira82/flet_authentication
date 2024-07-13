@@ -2,7 +2,8 @@ import flet as ft
 
 from flet_authentication.utils.colors import *
 from flet_authentication.utils.controls import *
-from flet_authentication.components.fields import CustomTextField
+# from flet_authentication.components.custom_fields import CustomTextField
+from flet_authentication.components.custom_buttons import CustomTextButton
 
 
 class HomePage(ft.Container):
@@ -28,17 +29,20 @@ class HomePage(ft.Container):
                                 weight=ft.FontWeight.BOLD,
                                 expand=True,
                             ),
-                            # button home page
+                            # button create account
                             ft.Container(
                                 alignment=ft.alignment.center,
                                 height=BTN_HEIGHT,
                                 bgcolor=CUSTOM_BGCOLOR,
-                                content=ft.Text(
-                                    "Dashboard",
-                                    size=12,
-                                    color=CUSTOM_TEXT_COLOR,
-                                    style=ft.TextStyle.baseline,
-                                ),
+                                content=CustomTextButton("Create Account"),
+                                on_click=lambda e: page.go("/register_user"),
+                            ),
+                            # button goto dashboard
+                            ft.Container(
+                                alignment=ft.alignment.center,
+                                height=BTN_HEIGHT,
+                                bgcolor=CUSTOM_BGCOLOR,
+                                content=CustomTextButton("Dashboard"),
                                 on_click=lambda e: page.go("/dashboard"),
                             ),
                         ],

@@ -20,4 +20,4 @@ def hash_password(password: str) -> str:
     Returns:
         str: return the hashed password
     """
-    return hashlib.sha256(password.encode()).hexdigest()
+    return hashlib.sha256(password.encode()).hexdigest() if password != "" else None
